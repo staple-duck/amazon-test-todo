@@ -1,8 +1,9 @@
 import { CategoriesList } from '@/components/categories/CategoriesList';
+import { TodosList } from '@/components/todos/TodosList';
 
 /**
  * Home page - main todo interface.
- * Shows categories list and todo management (coming in next commit).
+ * Shows categories sidebar and todos list with full CRUD functionality.
  */
 export function HomePage() {
   return (
@@ -22,12 +23,9 @@ export function HomePage() {
           <CategoriesList />
         </div>
 
-        {/* Todo list - will be added in next commit */}
+        {/* Todos list */}
         <div className="md:col-span-2">
-          <div className="rounded-lg border bg-card p-8 text-center text-muted-foreground">
-            <p className="text-lg font-medium">Todo List</p>
-            <p className="text-sm mt-2">Coming in the next commit...</p>
-          </div>
+          <TodosList />
         </div>
       </div>
     </div>

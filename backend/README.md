@@ -1,28 +1,54 @@
 # Todo Backend API
 
-Express.js backend with TypeScript, PostgreSQL, and comprehensive error handling.
+Production-grade Express.js backend with TypeScript, PostgreSQL, and comprehensive error handling.
 
 ## Stack
 
 - **Node.js 20** + **Express.js**
 - **TypeScript** (strict mode)
-- **PostgreSQL** with pg driver
-- **Zod** for validation
+- **PostgreSQL** with pg driver and connection pooling
+- **Zod** for runtime validation
 - **Jest** + **Supertest** for testing
+- **Helmet** for security headers
+- **CORS** for cross-origin requests
 
-## Project Structure
+## Features
 
-```
-src/
-├── config/          # Environment and database configuration
-├── middleware/      # Express middleware (error handling, logging)
-├── utils/           # Helper functions
-├── types/           # TypeScript type definitions
-├── db/              # Database migrations and schemas
-├── __tests__/       # Test files
-├── app.ts           # Express app setup
-└── server.ts        # Server entry point
-```
+- ✅ RESTful API design
+- ✅ TypeScript strict mode
+- ✅ Comprehensive error handling
+- ✅ Input validation with Zod
+- ✅ SQL injection prevention
+- ✅ Request logging
+- ✅ Health checks
+- ✅ Graceful shutdown
+- ✅ Unit and integration tests
+- ✅ >70% test coverage
+
+## API Endpoints
+
+See [API.md](../API.md) for complete documentation.
+
+### Quick Reference
+
+**Categories:**
+- `GET /api/categories` - Get all categories
+- `GET /api/categories/:id` - Get category by ID
+- `POST /api/categories` - Create category
+- `PUT /api/categories/:id` - Update category
+- `DELETE /api/categories/:id` - Delete category
+
+**Todos:**
+- `GET /api/todos` - Get todos (with filtering/sorting)
+- `GET /api/todos/statistics` - Get statistics
+- `GET /api/todos/:id` - Get todo by ID
+- `POST /api/todos` - Create todo
+- `PUT /api/todos/:id` - Update todo
+- `PATCH /api/todos/:id/toggle` - Toggle completion
+- `DELETE /api/todos/:id` - Delete todo
+
+**Health:**
+- `GET /health` - Health check
 
 ## Development
 
@@ -42,6 +68,9 @@ npm run test:watch
 # Type checking
 npm run type-check
 
+# Linting
+npm run lint
+
 # Build for production
 npm run build
 
@@ -49,40 +78,52 @@ npm run build
 npm start
 ```
 
-## Environment Variables
+## Database Schema
 
-Copy `.env.example` to `.env` and configure:
+See `src/db/migrations/` for SQL migration files.
 
-```env
-NODE_ENV=development
-PORT=5000
-DATABASE_URL=postgresql://user:password@localhost:5432/todoapp
-CORS_ORIGIN=http://localhost:3000
-```
+**Tables:**
+- `categories` - Todo categories
+- `todos` - Todo items
 
-## API Endpoints
-
-### Health Check
-- `GET /health` - Server health status
-
-### Categories (Coming in next commit)
-- `GET /api/categories` - Get all categories
-- `POST /api/categories` - Create category
-- `PUT /api/categories/:id` - Update category
-- `DELETE /api/categories/:id` - Delete category
-
-### Todos (Coming in next commit)
-- `GET /api/todos` - Get todos with filtering and sorting
-- `POST /api/todos` - Create todo
-- `PUT /api/todos/:id` - Update todo
-- `DELETE /api/todos/:id` - Delete todo
+**Indexes:**
+- Categories: name
+- Todos: category_id, completed, due_date, created_at
+- Partial index on active todos for performance
 
 ## Testing
 
-Run tests with coverage:
 ```bash
+# Run all tests
 npm test
+
+# Run with coverage report
+npm test -- --coverage
+
+# Run specific test file
+npm test -- src/modules/categories/__tests__/category.service.test.ts
 ```
 
-Coverage thresholds are set at 70% for branches, functions, lines, and statements.
+Coverage thresholds: 70% (branches, functions, lines, statements)
+
+## Security
+
+- Helmet.js security headers
+- CORS configuration
+- Zod input validation
+- Parameterized SQL queries
+- Error sanitization
+- Environment variable validation
+
+## Production Deployment
+
+1. Set environment variables
+2. Run database migrations
+3. Build: `npm run build`
+4. Start: `npm start`
+
+Or use Docker (recommended):
+```bash
+docker-compose up -d
+```
 

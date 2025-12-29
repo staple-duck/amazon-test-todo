@@ -46,7 +46,10 @@ export const createApp = (): Express => {
 
   // API routes
   const categoryRoutes = require('./modules/categories/category.routes').default;
+  const todoRoutes = require('./modules/todos/todo.routes').default;
+  
   app.use('/api/categories', categoryRoutes);
+  app.use('/api/todos', todoRoutes);
 
   // 404 handler - must be after all routes
   app.use(notFoundHandler);

@@ -3,13 +3,14 @@ import { TodosList } from '@/components/todos/TodosList';
 
 /**
  * Home page - main todo interface.
- * Shows categories sidebar and todos list with full CRUD functionality.
+ * Shows categories sidebar and todos list with filtering and sorting.
  */
 export function HomePage() {
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
+      {/* Header */}
       <div className="text-center space-y-2">
-        <h1 className="text-4xl font-bold tracking-tight">
+        <h1 className="text-4xl font-bold tracking-tight bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
           Todo App
         </h1>
         <p className="text-muted-foreground">
@@ -17,14 +18,15 @@ export function HomePage() {
         </p>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-3">
+      {/* Main content */}
+      <div className="grid gap-6 lg:grid-cols-4">
         {/* Categories sidebar */}
-        <div className="md:col-span-1">
+        <div className="lg:col-span-1">
           <CategoriesList />
         </div>
 
-        {/* Todos list */}
-        <div className="md:col-span-2">
+        {/* Todos list with filters */}
+        <div className="lg:col-span-3">
           <TodosList />
         </div>
       </div>

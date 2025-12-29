@@ -1,13 +1,13 @@
-import { Plus } from 'lucide-react';
 import { useState } from 'react';
 import { useGetTodosQuery } from '@/store/api/todosApi';
 import { useAppSelector } from '@/store/hooks';
 import { selectTodoFilters } from '@/store/slices/uiSlice';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { TodoCard } from './TodoCard';
 import { TodoFormDialog } from './TodoFormDialog';
+import { TodosHeader } from './TodosHeader';
+import { TodoFilters } from './TodoFilters';
 import type { Todo } from '@/types/api.types';
 
 /**
@@ -32,59 +32,56 @@ export function TodosList() {
     return acc;
   }, {} as Record<string, Todo[]>);
 
-  if (isLoading) {
-    return (
-      <Card>
-        <CardHeader>
-          <CardTitle>Todos</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          <Skeleton className="h-24 w-full" />
-          <Skeleton className="h-24 w-full" />
-          <Skeleton className="h-24 w-full" />
-        </CardContent>
-      </Card>
-    );
-  }
-
   return (
     <>
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
-          <CardTitle>Todos</CardTitle>
-          <Button size="sm" onClick={() => setCreateDialogOpen(true)}>
-            <Plus className="h-4 w-4 mr-2" />
-            Add Todo
-          </Button>
-        </CardHeader>
-        <CardContent>
-          {todos && todos.length > 0 ? (
-            <div className="space-y-6">
-              {Object.entries(groupedTodos || {}).map(([categoryName, categoryTodos]) => (
-                <div key={categoryName}>
-                  <h3 className="text-sm font-semibold text-muted-foreground mb-3">
-                    {categoryName}
-                  </h3>
-                  <div className="space-y-3">
-                    {categoryTodos.map((todo) => (
-                      <TodoCard
-                        key={todo.id}
-                        todo={todo}
-                        onEdit={() => setEditingTodo(todo)}
-                      />
-                    ))}
+      <div className="space-y-6">
+        {/* Header with stats */}
+        <TodosHeader onCreateClick={() => setCreateDialogOpen(true)} />
+
+        {/* Filters */}
+        <TodoFilters />
+
+        {/* Todos list */}
+        <Card>
+          <CardContent className="pt-6">
+            {isLoading ? (
+              <div className="space-y-3">
+                <Skeleton className="h-24 w-full" />
+                <Skeleton className="h-24 w-full" />
+                <Skeleton className="h-24 w-full" />
+              </div>
+            ) : todos && todos.length > 0 ? (
+              <div className="space-y-6">
+                {Object.entries(groupedTodos || {}).map(([categoryName, categoryTodos]) => (
+                  <div key={categoryName} className="space-y-3">
+                    <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
+                      {categoryName}
+                    </h3>
+                    <div className="space-y-3">
+                      {categoryTodos.map((todo) => (
+                        <TodoCard
+                          key={todo.id}
+                          todo={todo}
+                          onEdit={() => setEditingTodo(todo)}
+                        />
+                      ))}
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-12 text-muted-foreground">
-              <p className="text-lg font-medium">No todos yet</p>
-              <p className="text-sm mt-1">Create your first todo to get started</p>
-            </div>
-          )}
-        </CardContent>
-      </Card>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-12 text-muted-foreground">
+                <p className="text-lg font-medium">No todos found</p>
+                <p className="text-sm mt-1">
+                  {filters.status !== 'all' || filters.categoryId
+                    ? 'Try adjusting your filters'
+                    : 'Create your first todo to get started'}
+                </p>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
 
       {/* Create dialog */}
       <TodoFormDialog

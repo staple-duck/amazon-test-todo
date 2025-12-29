@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { format } from 'date-fns';
 import { Calendar, Pencil, Trash2 } from 'lucide-react';
 import { useToggleTodoMutation, useDeleteTodoMutation } from '@/store/api/todosApi';
 import { Button } from '@/components/ui/button';
@@ -7,6 +6,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { CategoryBadge } from '@/components/categories/CategoryBadge';
 import { DeleteTodoDialog } from './DeleteTodoDialog';
 import { handleApiError, showSuccess } from '@/lib/api-helpers';
+import { formatDate, isOverdue as checkOverdue, getDueDateColor } from '@/lib/date-utils';
 import { cn } from '@/lib/utils';
 import type { Todo } from '@/types/api.types';
 
@@ -18,7 +18,7 @@ interface TodoCardProps {
 /**
  * Todo card component.
  * Displays a single todo with all its info and actions.
- * Handles completion toggle and delete.
+ * Handles completion toggle and delete with smooth animations.
  */
 export function TodoCard({ todo, onEdit }: TodoCardProps) {
   const [toggleTodo] = useToggleTodoMutation();
@@ -28,7 +28,7 @@ export function TodoCard({ todo, onEdit }: TodoCardProps) {
   const handleToggle = async () => {
     try {
       await toggleTodo(todo.id).unwrap();
-      showSuccess(todo.completed ? 'Todo marked as active' : 'Todo completed!');
+      showSuccess(todo.completed ? 'Todo marked as active' : 'Todo completed! 🎉');
     } catch (error) {
       handleApiError(error);
     }
@@ -44,16 +44,16 @@ export function TodoCard({ todo, onEdit }: TodoCardProps) {
     }
   };
 
-  // Check if todo is overdue
-  const isOverdue = todo.dueDate && !todo.completed && new Date(todo.dueDate) < new Date();
+  const isOverdue = checkOverdue(todo.dueDate, todo.completed);
+  const dueDateColor = getDueDateColor(todo.dueDate, todo.completed);
 
   return (
     <>
       <div
         className={cn(
-          'group relative rounded-lg border p-4 transition-all hover:shadow-md',
-          todo.completed && 'bg-muted/50',
-          isOverdue && 'border-destructive'
+          'group relative rounded-lg border p-4 transition-all duration-200 hover:shadow-md',
+          todo.completed && 'bg-muted/50 border-muted',
+          isOverdue && 'border-destructive bg-destructive/5'
         )}
       >
         <div className="flex items-start gap-3">
@@ -69,7 +69,7 @@ export function TodoCard({ todo, onEdit }: TodoCardProps) {
             {/* Title */}
             <h4
               className={cn(
-                'font-medium leading-tight',
+                'font-medium leading-tight transition-all',
                 todo.completed && 'line-through text-muted-foreground'
               )}
             >
@@ -94,12 +94,12 @@ export function TodoCard({ todo, onEdit }: TodoCardProps) {
               {todo.dueDate && (
                 <span
                   className={cn(
-                    'inline-flex items-center gap-1 text-muted-foreground',
-                    isOverdue && 'text-destructive font-medium'
+                    'inline-flex items-center gap-1 font-medium',
+                    dueDateColor
                   )}
                 >
                   <Calendar className="h-3 w-3" />
-                  {format(new Date(todo.dueDate), 'MMM d, yyyy')}
+                  {formatDate(todo.dueDate)}
                   {isOverdue && ' (overdue)'}
                 </span>
               )}

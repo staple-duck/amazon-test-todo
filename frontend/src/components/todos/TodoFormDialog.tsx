@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Calendar as CalendarIcon } from 'lucide-react';
+import { Calendar as CalendarIcon, AlertCircle, Clock, X } from 'lucide-react';
 import { format } from 'date-fns';
 import { useCreateTodoMutation, useUpdateTodoMutation } from '@/store/api/todosApi';
 import { useGetCategoriesQuery } from '@/store/api/categoriesApi';
@@ -44,13 +44,52 @@ export function TodoFormDialog({ open, onOpenChange, todo }: TodoFormDialogProps
   const [description, setDescription] = useState('');
   const [categoryId, setCategoryId] = useState('');
   const [dueDate, setDueDate] = useState<Date | undefined>();
+  const [dueTime, setDueTime] = useState<string>('09:00');
 
-  const { data: categories } = useGetCategoriesQuery();
+  const { data: categories, isLoading: isLoadingCategories } = useGetCategoriesQuery();
   const [createTodo, { isLoading: isCreating }] = useCreateTodoMutation();
   const [updateTodo, { isLoading: isUpdating }] = useUpdateTodoMutation();
 
   const isEditing = !!todo;
   const isLoading = isCreating || isUpdating;
+  const hasCategories = categories && categories.length > 0;
+
+  // Helper function to combine date and time
+  const combineDateAndTime = (date: Date, time: string): Date => {
+    const [hours, minutes] = time.split(':').map(Number);
+    const combined = new Date(date);
+    combined.setHours(hours, minutes, 0, 0);
+    return combined;
+  };
+
+  // Helper function to get smart default time
+  const getDefaultTime = (selectedDate: Date): string => {
+    const now = new Date();
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const checkDate = new Date(selectedDate);
+    checkDate.setHours(0, 0, 0, 0);
+
+    if (checkDate.getTime() === today.getTime()) {
+      // If today, set to current time + 1 hour (rounded to nearest hour)
+      const nextHour = new Date(now.getTime() + 60 * 60 * 1000);
+      const hours = nextHour.getHours().toString().padStart(2, '0');
+      return `${hours}:00`;
+    } else {
+      // If future date, default to 9 AM
+      return '09:00';
+    }
+  };
+
+  // Validate date+time is not in past
+  const isDueDateTimeValid = (): boolean => {
+    if (!dueDate) return true;
+    const combined = combineDateAndTime(dueDate, dueTime);
+    const now = new Date();
+    return combined >= now;
+  };
+
+  const canSubmit = hasCategories && !isLoading && isDueDateTimeValid();
 
   // Populate form when editing
   useEffect(() => {
@@ -58,13 +97,24 @@ export function TodoFormDialog({ open, onOpenChange, todo }: TodoFormDialogProps
       setTitle(todo.title);
       setDescription(todo.description || '');
       setCategoryId(todo.categoryId);
-      setDueDate(todo.dueDate ? new Date(todo.dueDate) : undefined);
+      if (todo.dueDate) {
+        const date = new Date(todo.dueDate);
+        setDueDate(date);
+        // Extract time from existing date
+        const hours = date.getHours().toString().padStart(2, '0');
+        const minutes = date.getMinutes().toString().padStart(2, '0');
+        setDueTime(`${hours}:${minutes}`);
+      } else {
+        setDueDate(undefined);
+        setDueTime('09:00');
+      }
     } else {
       // Reset form
       setTitle('');
       setDescription('');
       setCategoryId(categories?.[0]?.id || '');
       setDueDate(undefined);
+      setDueTime('09:00');
     }
   }, [todo, categories, open]);
 
@@ -88,7 +138,7 @@ export function TodoFormDialog({ open, onOpenChange, todo }: TodoFormDialogProps
         title: trimmedTitle,
         description: description.trim() || null,
         categoryId,
-        dueDate: dueDate ? formatDateForApi(dueDate) : null,
+        dueDate: dueDate ? formatDateForApi(combineDateAndTime(dueDate, dueTime)) : null,
       };
 
       if (isEditing) {
@@ -122,6 +172,15 @@ export function TodoFormDialog({ open, onOpenChange, todo }: TodoFormDialogProps
           </DialogHeader>
 
           <div className="space-y-4 py-4">
+            {/* Warning when no categories exist */}
+            {!isLoadingCategories && !hasCategories && (
+              <div className="flex items-start gap-2 rounded-md border border-amber-200 bg-amber-50 p-3 dark:border-amber-900/50 dark:bg-amber-950/20">
+                <AlertCircle className="h-4 w-4 text-amber-600 dark:text-amber-500 mt-0.5 flex-shrink-0" />
+                <p className="text-sm text-amber-800 dark:text-amber-200">
+                  No categories available. Please create a category first before adding todos.
+                </p>
+              </div>
+            )}
             {/* Title */}
             <div className="space-y-2">
               <Label htmlFor="title">Title *</Label>
@@ -165,9 +224,9 @@ export function TodoFormDialog({ open, onOpenChange, todo }: TodoFormDialogProps
               </Select>
             </div>
 
-            {/* Due Date */}
+            {/* Due Date & Time */}
             <div className="space-y-2">
-              <Label>Due Date</Label>
+              <Label>Due Date & Time</Label>
               <Popover>
                 <PopoverTrigger asChild>
                   <Button
@@ -178,19 +237,63 @@ export function TodoFormDialog({ open, onOpenChange, todo }: TodoFormDialogProps
                     )}
                   >
                     <CalendarIcon className="mr-2 h-4 w-4" />
-                    {dueDate ? format(dueDate, 'PPP') : 'Pick a date'}
+                    {dueDate ? format(combineDateAndTime(dueDate, dueTime), 'PPP p') : 'Pick a date and time'}
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0" align="start">
                   <Calendar
                     mode="single"
                     selected={dueDate}
-                    onSelect={setDueDate}
-                    disabled={(date) => date < new Date(new Date().setHours(0, 0, 0, 0))}
+                    onSelect={(date) => {
+                      setDueDate(date);
+                      if (date) {
+                        setDueTime(getDefaultTime(date));
+                      }
+                    }}
+                    disabled={(date) => {
+                      const today = new Date();
+                      today.setHours(0, 0, 0, 0);
+                      const checkDate = new Date(date);
+                      checkDate.setHours(0, 0, 0, 0);
+                      return checkDate < today;
+                    }}
                     initialFocus
                   />
                 </PopoverContent>
               </Popover>
+
+              {/* Time picker - show only if date selected */}
+              {dueDate && (
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <Clock className="h-4 w-4 text-muted-foreground" />
+                    <Input
+                      type="time"
+                      value={dueTime}
+                      onChange={(e) => setDueTime(e.target.value)}
+                      className="flex-1"
+                    />
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => {
+                        setDueDate(undefined);
+                        setDueTime('09:00');
+                      }}
+                      title="Clear due date"
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </div>
+                  {!isDueDateTimeValid() && (
+                    <p className="text-sm text-red-600 dark:text-red-400 flex items-center gap-1">
+                      <AlertCircle className="h-3 w-3" />
+                      Due date and time cannot be in the past
+                    </p>
+                  )}
+                </div>
+              )}
             </div>
           </div>
 
@@ -203,7 +306,7 @@ export function TodoFormDialog({ open, onOpenChange, todo }: TodoFormDialogProps
             >
               Cancel
             </Button>
-            <Button type="submit" disabled={isLoading}>
+            <Button type="submit" disabled={!canSubmit}>
               {isLoading ? 'Saving...' : isEditing ? 'Save Changes' : 'Create'}
             </Button>
           </DialogFooter>

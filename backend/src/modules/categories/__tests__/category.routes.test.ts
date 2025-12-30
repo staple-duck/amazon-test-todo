@@ -37,7 +37,8 @@ describe('Category Routes', () => {
         { id: '2', name: 'Personal', created_at: new Date(), updated_at: new Date() },
       ];
 
-      mockPool.query.mockResolvedValue({ rows: mockCategories } as any);
+      // @ts-expect-error - Mocking query result
+      mockPool.query.mockResolvedValue({ rows: mockCategories });
 
       const response = await request(app).get('/api/categories');
 
@@ -57,9 +58,11 @@ describe('Category Routes', () => {
       };
 
       // Mock findByName (returns null - no duplicate)
-      mockPool.query.mockResolvedValueOnce({ rows: [] } as any);
+      // @ts-expect-error - Mocking query result
+      mockPool.query.mockResolvedValueOnce({ rows: [] });
       // Mock create
-      mockPool.query.mockResolvedValueOnce({ rows: [newCategory] } as any);
+      // @ts-expect-error - Mocking query result
+      mockPool.query.mockResolvedValueOnce({ rows: [newCategory] });
 
       const response = await request(app)
         .post('/api/categories')
@@ -87,8 +90,10 @@ describe('Category Routes', () => {
         updated_at: new Date(),
       };
 
-      mockPool.query.mockResolvedValueOnce({ rows: [] } as any);
-      mockPool.query.mockResolvedValueOnce({ rows: [newCategory] } as any);
+      // @ts-expect-error - Mocking query result
+      mockPool.query.mockResolvedValueOnce({ rows: [] });
+      // @ts-expect-error - Mocking query result
+      mockPool.query.mockResolvedValueOnce({ rows: [newCategory] });
 
       const response = await request(app)
         .post('/api/categories')
@@ -109,11 +114,14 @@ describe('Category Routes', () => {
       };
 
       // Mock findById
-      mockPool.query.mockResolvedValueOnce({ rows: [updatedCategory] } as any);
+      // @ts-expect-error - Mocking query result
+      mockPool.query.mockResolvedValueOnce({ rows: [updatedCategory] });
       // Mock findByName (no duplicate)
-      mockPool.query.mockResolvedValueOnce({ rows: [] } as any);
+      // @ts-expect-error - Mocking query result
+      mockPool.query.mockResolvedValueOnce({ rows: [] });
       // Mock update
-      mockPool.query.mockResolvedValueOnce({ rows: [updatedCategory] } as any);
+      // @ts-expect-error - Mocking query result
+      mockPool.query.mockResolvedValueOnce({ rows: [updatedCategory] });
 
       const response = await request(app)
         .put('/api/categories/550e8400-e29b-41d4-a716-446655440000')
@@ -142,11 +150,14 @@ describe('Category Routes', () => {
       };
 
       // Mock findById
-      mockPool.query.mockResolvedValueOnce({ rows: [category] } as any);
+      // @ts-expect-error - Mocking query result
+      mockPool.query.mockResolvedValueOnce({ rows: [category] });
       // Mock hasAssociatedTodos
-      mockPool.query.mockResolvedValueOnce({ rows: [{ has_todos: false }] } as any);
+      // @ts-expect-error - Mocking query result
+      mockPool.query.mockResolvedValueOnce({ rows: [{ has_todos: false }] });
       // Mock delete
-      mockPool.query.mockResolvedValueOnce({ rowCount: 1 } as any);
+      // @ts-expect-error - Mocking query result
+      mockPool.query.mockResolvedValueOnce({ rowCount: 1 });
 
       const response = await request(app).delete(
         '/api/categories/550e8400-e29b-41d4-a716-446655440000'

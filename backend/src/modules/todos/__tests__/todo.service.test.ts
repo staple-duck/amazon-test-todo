@@ -113,9 +113,9 @@ describe('TodoService', () => {
       );
     });
 
-    it('should throw 400 when due date is in the past', async () => {
+    it('should throw 400 when due date and time is in the past', async () => {
       const yesterday = new Date();
-      yesterday.setDate(yesterday.getDate() - 1);
+      yesterday.setTime(yesterday.getTime() - 24 * 60 * 60 * 1000); // 24 hours ago
 
       mockCategoryRepository.findById.mockResolvedValue(validCategory as any);
 
@@ -124,12 +124,13 @@ describe('TodoService', () => {
           ...createData,
           dueDate: yesterday,
         })
-      ).rejects.toThrow(new AppError(400, 'Due date cannot be in the past'));
+      ).rejects.toThrow(new AppError(400, 'Due date and time cannot be in the past'));
     });
 
-    it('should allow due date to be today', async () => {
-      const today = new Date();
-      const mockTodo = { id: '1', ...createData, dueDate: today };
+    it('should allow due date and time to be in the future', async () => {
+      const future = new Date();
+      future.setTime(future.getTime() + 60 * 60 * 1000); // 1 hour from now
+      const mockTodo = { id: '1', ...createData, dueDate: future };
 
       mockCategoryRepository.findById.mockResolvedValue(validCategory as any);
       mockTodoRepository.create.mockResolvedValue(mockTodo as any);
@@ -137,9 +138,23 @@ describe('TodoService', () => {
       await expect(
         service.createTodo({
           ...createData,
-          dueDate: today,
+          dueDate: future,
         })
       ).resolves.toBeDefined();
+    });
+
+    it('should reject due date and time if it is in the past (even today)', async () => {
+      const pastTime = new Date();
+      pastTime.setHours(pastTime.getHours() - 1); // 1 hour ago
+
+      mockCategoryRepository.findById.mockResolvedValue(validCategory as any);
+
+      await expect(
+        service.createTodo({
+          ...createData,
+          dueDate: pastTime,
+        })
+      ).rejects.toThrow(new AppError(400, 'Due date and time cannot be in the past'));
     });
   });
 

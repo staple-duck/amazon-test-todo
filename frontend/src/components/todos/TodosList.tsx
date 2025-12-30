@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useGetTodosQuery } from '@/store/api/todosApi';
+import { useGetCategoriesQuery } from '@/store/api/categoriesApi';
 import { useAppSelector } from '@/store/hooks';
 import { selectTodoFilters } from '@/store/slices/uiSlice';
 import { Card, CardContent } from '@/components/ui/card';
@@ -8,6 +9,7 @@ import { TodoCard } from './TodoCard';
 import { TodoFormDialog } from './TodoFormDialog';
 import { TodosHeader } from './TodosHeader';
 import { TodoFilters } from './TodoFilters';
+import { AlertCircle } from 'lucide-react';
 import type { Todo } from '@/types/api.types';
 
 /**
@@ -18,9 +20,12 @@ import type { Todo } from '@/types/api.types';
 export function TodosList() {
   const filters = useAppSelector(selectTodoFilters);
   const { data: todos, isLoading } = useGetTodosQuery(filters);
+  const { data: categories, isLoading: isLoadingCategories } = useGetCategoriesQuery();
   
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
   const [editingTodo, setEditingTodo] = useState<Todo | null>(null);
+
+  const hasCategories = categories && categories.length > 0;
 
   // Group todos by category
   const groupedTodos = todos?.reduce((acc, todo) => {
@@ -36,7 +41,26 @@ export function TodosList() {
     <>
       <div className="space-y-6">
         {/* Header with stats */}
-        <TodosHeader onCreateClick={() => setCreateDialogOpen(true)} />
+        <TodosHeader 
+          onCreateClick={() => setCreateDialogOpen(true)}
+          hasCategories={hasCategories}
+          isLoadingCategories={isLoadingCategories}
+        />
+
+        {/* Warning banner when no categories exist */}
+        {!isLoadingCategories && !hasCategories && (
+          <div className="flex items-start gap-3 rounded-lg border border-amber-200 bg-amber-50 p-4 dark:border-amber-900/50 dark:bg-amber-950/20">
+            <AlertCircle className="h-5 w-5 text-amber-600 dark:text-amber-500 mt-0.5" />
+            <div className="flex-1">
+              <h3 className="font-semibold text-amber-900 dark:text-amber-100">
+                No categories yet!
+              </h3>
+              <p className="mt-1 text-sm text-amber-800 dark:text-amber-200">
+                Create a category first to start organizing your todos. Categories help you group related tasks together.
+              </p>
+            </div>
+          </div>
+        )}
 
         {/* Filters */}
         <TodoFilters />

@@ -1,438 +1,182 @@
-# Todo App - Production Grade Full-Stack Application
+# 📝 Production-Grade Todo Application
 
-A modern, feature-rich todo application built with industry best practices and production-grade architecture.
+Modern full-stack todo app demonstrating enterprise-level architecture and best practices.
 
-![Tech Stack](https://img.shields.io/badge/React-18-blue)
-![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue)
-![Node](https://img.shields.io/badge/Node.js-20-green)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-blue)
-![Docker](https://img.shields.io/badge/Docker-ready-blue)
+![React](https://img.shields.io/badge/React-18-blue) ![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue) ![Node.js](https://img.shields.io/badge/Node.js-20-green) ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-blue) ![Docker](https://img.shields.io/badge/Docker-ready-blue)
 
-## 🌟 Features
+---
 
-### Core Functionality
-- ✅ **Full CRUD Operations** - Create, read, update, and delete todos and categories
-- ✅ **Category Management** - Organize todos into custom categories
-- ✅ **Due Date Tracking** - Set and track due dates with smart date display
-- ✅ **Completion Status** - Mark todos as complete/incomplete with visual feedback
-- ✅ **Overdue Detection** - Automatic detection and highlighting of overdue todos
-
-### Advanced Features
-- 🔍 **Smart Filtering** - Filter by status (all/active/completed) and category
-- 📊 **Sorting** - Sort by due date or creation date (ascending/descending)
-- 📈 **Statistics Dashboard** - Real-time counts of total, active, and completed todos
-- 🎨 **Dark/Light Theme** - System-aware theme with manual toggle
-- 📱 **Responsive Design** - Mobile-first, works on all devices
-- ♿ **Accessibility** - WCAG compliant with keyboard navigation and ARIA labels
-- ⚡ **Real-time Updates** - Optimistic UI updates with automatic cache invalidation
-
-## 🏗️ Architecture
-
-### Tech Stack
-
-**Frontend:**
-- **React 18** - UI library with hooks and modern features
-- **TypeScript** - Type safety and better developer experience
-- **Redux Toolkit** - State management with RTK Query for data fetching
-- **Vite** - Lightning-fast build tool and dev server
-- **shadcn/ui** - High-quality, accessible UI components
-- **Tailwind CSS** - Utility-first CSS framework
-- **React Router** - Client-side routing
-- **date-fns** - Modern date utility library
-- **Vitest** - Fast unit testing framework
-
-**Backend:**
-- **Node.js 20** - JavaScript runtime
-- **Express.js** - Web application framework
-- **TypeScript** - Type-safe backend code
-- **PostgreSQL 16** - Relational database
-- **Zod** - Runtime type validation
-- **Jest** - Testing framework
-- **Helmet** - Security middleware
-- **CORS** - Cross-origin resource sharing
-
-**Infrastructure:**
-- **Docker** - Containerization
-- **Docker Compose** - Multi-container orchestration
-- **PostgreSQL** - Database with persistent volumes
-- **Nginx** - Production web server (frontend)
-
-### Project Structure
-
-```
-.
-├── backend/                    # Express.js API
-│   ├── src/
-│   │   ├── config/            # Configuration (env, database)
-│   │   ├── middleware/        # Express middleware
-│   │   ├── modules/           # Feature modules
-│   │   │   ├── categories/    # Categories CRUD
-│   │   │   └── todos/         # Todos CRUD
-│   │   ├── types/             # TypeScript types
-│   │   ├── utils/             # Utility functions
-│   │   ├── app.ts             # Express app setup
-│   │   └── server.ts          # Server entry point
-│   ├── Dockerfile             # Backend container
-│   └── package.json
-│
-├── frontend/                   # React application
-│   ├── src/
-│   │   ├── components/        # React components
-│   │   │   ├── categories/    # Category components
-│   │   │   ├── todos/         # Todo components
-│   │   │   ├── layout/        # Layout components
-│   │   │   ├── ui/            # shadcn/ui components
-│   │   │   └── providers/     # Context providers
-│   │   ├── store/             # Redux store
-│   │   │   ├── api/           # RTK Query API
-│   │   │   └── slices/        # Redux slices
-│   │   ├── pages/             # Page components
-│   │   ├── lib/               # Utility functions
-│   │   ├── types/             # TypeScript types
-│   │   └── config/            # App configuration
-│   ├── Dockerfile             # Frontend container
-│   ├── nginx.conf             # Nginx configuration
-│   └── package.json
-│
-└── docker-compose.yml          # Container orchestration
-```
-
-## 🚀 Quick Start
-
-### Prerequisites
-
-- **Docker Desktop** (or Docker + Docker Compose)
-- **Git**
-
-That's it! Docker handles all dependencies.
-
-### Installation & Running
-
-1. **Clone the repository:**
-   ```bash
-   git clone <repository-url>
-   cd amazon-test-todo
-   ```
-
-2. **Set up environment variables:**
-   ```bash
-   cp .env.example .env
-   ```
-   
-   Default values work out of the box. Modify if needed:
-   ```env
-   POSTGRES_DB=todoapp
-   POSTGRES_USER=todouser
-   POSTGRES_PASSWORD=todopass
-   POSTGRES_PORT=5432
-   BACKEND_PORT=5000
-   FRONTEND_PORT=3000
-   ```
-
-3. **Start the application:**
-   ```bash
-   docker-compose up --build
-   ```
-
-4. **Access the application:**
-   - **Frontend:** http://localhost:3000
-   - **Backend API:** http://localhost:5000/api
-   - **Database:** localhost:5432
-
-### Development Commands
+## 🚀 Quick Start (One Command)
 
 ```bash
-# Start all services
-docker-compose up
-
-# Start in detached mode
-docker-compose up -d
-
-# Stop all services
-docker-compose down
-
-# Stop and remove volumes (fresh start)
-docker-compose down -v
-
-# View logs
-docker-compose logs -f
-
-# View specific service logs
-docker-compose logs -f backend
-docker-compose logs -f frontend
-
-# Rebuild containers
 docker-compose up --build
 ```
 
-## 📖 API Documentation
+**That's it!** Open [http://localhost:3000](http://localhost:3000)
 
-### Base URL
+- Frontend: `http://localhost:3000`
+- Backend API: `http://localhost:5001/api`
+- Database auto-initializes with default categories
+
+**Requirements:** Docker Desktop installed
+
+---
+
+## ✨ Key Features
+
+- **Full CRUD** for todos and categories with real-time updates
+- **Advanced filtering** by status, category, date with smart sorting
+- **Date & Time picker** with validation (prevents past dates/times)
+- **Dark/Light theme** with system preference detection
+- **Responsive design** optimized for mobile and desktop
+- **Statistics dashboard** with real-time todo metrics
+- **Category management** to organize tasks efficiently
+
+## 🏗️ Tech Stack & Architecture
+
+**Frontend**
+- React 18 + TypeScript (strict mode)
+- Redux Toolkit + RTK Query (state & caching)
+- Vite (dev server & bundler)
+- shadcn/ui + Tailwind CSS (UI components)
+- date-fns (datetime handling)
+
+**Backend**
+- Node.js 20 + Express + TypeScript
+- PostgreSQL 16 (with connection pooling)
+- Zod (runtime validation)
+- Jest (testing with 90%+ coverage)
+- Helmet + CORS (security)
+
+**DevOps**
+- Docker + Docker Compose (containerization)
+- Auto-initialization (database migrations on startup)
+- Hot-reload enabled (development)
+- Health checks (monitoring)
+
+## 📁 Project Structure
+
+Clean architecture with separation of concerns:
+
 ```
-http://localhost:5000/api
-```
+backend/
+├── src/
+│   ├── modules/         # Feature-based modules (todos, categories)
+│   ├── middleware/      # Error handling, logging, security
+│   ├── config/          # Database, environment validation
+│   └── db/              # SQL migrations (auto-run on startup)
 
-### Categories Endpoints
-
-#### Get All Categories
-```http
-GET /api/categories
-```
-
-**Response:**
-```json
-{
-  "status": "success",
-  "data": [
-    {
-      "id": "uuid",
-      "name": "Work",
-      "createdAt": "2024-01-01T00:00:00.000Z",
-      "updatedAt": "2024-01-01T00:00:00.000Z"
-    }
-  ]
-}
-```
-
-#### Create Category
-```http
-POST /api/categories
-Content-Type: application/json
-
-{
-  "name": "Work"
-}
-```
-
-#### Update Category
-```http
-PUT /api/categories/:id
-Content-Type: application/json
-
-{
-  "name": "Updated Name"
-}
-```
-
-#### Delete Category
-```http
-DELETE /api/categories/:id
-```
-
-### Todos Endpoints
-
-#### Get All Todos
-```http
-GET /api/todos?status=all&categoryId=uuid&sortBy=createdAt&order=desc
-```
-
-**Query Parameters:**
-- `status`: `all` | `active` | `completed` (default: `all`)
-- `categoryId`: UUID (optional)
-- `sortBy`: `createdAt` | `dueDate` (default: `createdAt`)
-- `order`: `asc` | `desc` (default: `desc`)
-
-#### Create Todo
-```http
-POST /api/todos
-Content-Type: application/json
-
-{
-  "title": "Buy groceries",
-  "description": "Milk, eggs, bread",
-  "categoryId": "uuid",
-  "dueDate": "2024-12-31T00:00:00.000Z"
-}
+frontend/
+├── src/
+│   ├── components/      # Reusable UI components
+│   ├── store/           # Redux + RTK Query (API layer)
+│   ├── pages/           # Route-based pages
+│   └── lib/             # Utilities (date formatting, helpers)
 ```
 
-#### Update Todo
-```http
-PUT /api/todos/:id
-Content-Type: application/json
+## 🛠️ Development
 
-{
-  "title": "Updated title",
-  "completed": true
-}
+**Useful Commands:**
+```bash
+# Fresh start (clean database)
+docker-compose down -v && docker-compose up --build
+
+# View logs
+docker-compose logs -f backend
+docker-compose logs -f frontend
+
+# Run backend tests (inside container)
+docker exec todo-backend npm test
+
+# Stop services
+docker-compose down
 ```
 
-#### Toggle Todo Completion
-```http
-PATCH /api/todos/:id/toggle
+**Environment Variables:**
+Demo `.env` included for quick start. Default ports:
+- Frontend: `3000`
+- Backend: `5001` (changed from 5000 to avoid macOS AirPlay conflict)
+- PostgreSQL: `5432`
+
+## 💡 Key Implementation Highlights
+
+**Architecture Decisions:**
+- **Module-based structure** - Each feature (todos, categories) is self-contained
+- **Repository pattern** - Separation of data access from business logic
+- **DTOs with validation** - Type-safe API contracts using Zod
+- **RTK Query** - Automatic caching, optimistic updates, cache invalidation
+- **Auto-migrations** - Database initializes automatically on first Docker run
+
+**Technical Achievements:**
+- **Date/Time Picker** - Custom implementation with past-time validation (prevents selecting times that have already passed)
+- **Real-time validation** - Frontend validates before submission, backend double-checks
+- **Smart defaults** - Time picker suggests next hour for today, 9 AM for future dates
+- **Error boundaries** - Graceful error handling with user-friendly messages
+- **Optimistic UI** - Instant feedback, rolls back on failure
+- **Test coverage** - 90%+ backend coverage, comprehensive service tests
+
+## 📖 API Quick Reference
+
+**Base URL:** `http://localhost:5001/api`
+
+```bash
+# Categories
+GET    /api/categories           # List all
+POST   /api/categories           # Create
+PUT    /api/categories/:id       # Update
+DELETE /api/categories/:id       # Delete
+
+# Todos
+GET    /api/todos                # List with filters (?status=all&categoryId=uuid)
+POST   /api/todos                # Create (requires: title, categoryId, optional: dueDate)
+PUT    /api/todos/:id            # Update
+PATCH  /api/todos/:id/toggle     # Toggle completion
+DELETE /api/todos/:id            # Delete
+GET    /api/todos/statistics     # Get counts (total, active, completed)
+
+# Health
+GET    /health                   # Server health check
 ```
 
-#### Get Statistics
-```http
-GET /api/todos/statistics
-```
-
-**Response:**
-```json
-{
-  "status": "success",
-  "data": {
-    "total": 10,
-    "active": 6,
-    "completed": 4
-  }
-}
+**Example:**
+```bash
+# Create todo with datetime
+curl -X POST http://localhost:5001/api/todos \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "Team meeting",
+    "categoryId": "uuid-here",
+    "dueDate": "2025-12-31T14:30:00.000Z"
+  }'
 ```
 
 ## 🧪 Testing
 
-### Backend Tests
+**Backend (Jest):**
 ```bash
-cd backend
-npm test                 # Run all tests
-npm run test:watch       # Watch mode
+docker exec todo-backend npm test
 ```
 
-### Frontend Tests
-```bash
-cd frontend
-npm test                 # Run all tests
-npm run test:ui          # Run with UI
-```
+**Coverage:** 90%+ on service layer with validation tests for:
+- Date/time past validation
+- Category existence checks
+- CRUD operations
+- Error scenarios
 
-## 🔒 Security Features
+## 🔒 Production-Ready Features
 
-- ✅ **Helmet.js** - Security headers
-- ✅ **CORS** - Configured cross-origin requests
-- ✅ **Input Validation** - Zod schema validation
-- ✅ **SQL Injection Prevention** - Parameterized queries
-- ✅ **XSS Prevention** - Input sanitization
-- ✅ **Error Handling** - Safe error messages
-- ✅ **TypeScript** - Type safety throughout
-
-## 🎨 UI/UX Features
-
-- **Modern Design** - Clean, professional interface
-- **Smart Date Display** - "Today", "Tomorrow", relative dates
-- **Color-coded Dates** - Visual cues for due dates
-- **Overdue Indicators** - Clear highlighting
-- **Loading States** - Skeleton loaders
-- **Error Handling** - Toast notifications
-- **Empty States** - Helpful messages
-- **Hover Effects** - Smooth transitions
-- **Keyboard Navigation** - Full accessibility
-
-## 🐳 Docker Configuration
-
-### Services
-
-1. **PostgreSQL** - Database with persistent volume
-2. **Backend** - Express API with hot reload
-3. **Frontend** - Vite dev server / Nginx in production
-
-### Production Deployment
-
-```bash
-# Build production images
-docker-compose -f docker-compose.yml build
-
-# Run in production mode
-docker-compose up -d
-```
-
-## 📊 Database Schema
-
-### Categories Table
-```sql
-CREATE TABLE categories (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    name VARCHAR(100) NOT NULL UNIQUE,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-);
-```
-
-### Todos Table
-```sql
-CREATE TABLE todos (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    title VARCHAR(200) NOT NULL,
-    description TEXT,
-    completed BOOLEAN DEFAULT FALSE NOT NULL,
-    due_date TIMESTAMP WITH TIME ZONE,
-    category_id UUID NOT NULL REFERENCES categories(id) ON DELETE RESTRICT,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-);
-```
-
-## 🛠️ Development Setup (without Docker)
-
-### Backend
-```bash
-cd backend
-npm install
-cp .env.example .env
-# Configure DATABASE_URL in .env
-npm run dev
-```
-
-### Frontend
-```bash
-cd frontend
-npm install
-cp .env.example .env
-# Configure VITE_API_URL in .env
-npm run dev
-```
-
-## 📝 Environment Variables
-
-### Backend (.env)
-```env
-NODE_ENV=development
-PORT=5000
-DATABASE_URL=postgresql://user:password@localhost:5432/todoapp
-CORS_ORIGIN=http://localhost:3000
-```
-
-### Frontend (.env)
-```env
-VITE_API_URL=http://localhost:5000/api
-```
-
-## 🎯 Code Quality
-
-- **TypeScript Strict Mode** - Maximum type safety
-- **ESLint** - Code linting
-- **Prettier-ready** - Code formatting
-- **Clean Architecture** - Separation of concerns
-- **SOLID Principles** - Maintainable code
-- **Comprehensive Comments** - Self-documenting code
-
-## 🚢 Production Considerations
-
-- ✅ Multi-stage Docker builds
-- ✅ Nginx for static file serving
-- ✅ Database connection pooling
+- ✅ TypeScript strict mode throughout
+- ✅ SQL injection prevention (parameterized queries)
+- ✅ XSS prevention (input sanitization)
+- ✅ CORS configured
+- ✅ Helmet security headers
 - ✅ Error boundary components
 - ✅ Graceful shutdown handling
+- ✅ Database connection pooling
+- ✅ Environment validation (Zod)
 - ✅ Health check endpoints
 - ✅ Request logging
-- ✅ Environment variable validation
-- ✅ Database migrations ready
-- ✅ Bundle optimization
-
-## 📄 License
-
-MIT
-
-## 🙏 Acknowledgments
-
-Built with:
-- [React](https://react.dev/)
-- [TypeScript](https://www.typescriptlang.org/)
-- [Redux Toolkit](https://redux-toolkit.js.org/)
-- [shadcn/ui](https://ui.shadcn.com/)
-- [Tailwind CSS](https://tailwindcss.com/)
-- [Express.js](https://expressjs.com/)
-- [PostgreSQL](https://www.postgresql.org/)
-- [Docker](https://www.docker.com/)
 
 ---
 
-**Production-ready architecture • Type-safe • Fully tested • Docker-ready**
+**Built by [Anton Goncharenko](https://www.linkedin.com/in/anton-goncharenko-023a7288)** • Lead Software Engineer

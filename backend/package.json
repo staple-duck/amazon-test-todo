@@ -10,7 +10,8 @@
     "test": "jest --coverage",
     "test:watch": "jest --watch",
     "lint": "eslint src --ext .ts",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "db:init": "psql $DATABASE_URL -f src/db/init-db.sql"
   },
   "keywords": [
     "todo",

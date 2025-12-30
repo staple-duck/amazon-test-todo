@@ -64,13 +64,12 @@ export class TodoService {
     // Make sure the category exists
     await this.verifyCategoryExists(data.categoryId);
 
-    // Validate due date if provided (should be in the future or at least today)
+    // Validate due date if provided (should be in the future)
     if (data.dueDate) {
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
+      const now = new Date();
 
-      if (data.dueDate < today) {
-        throw new AppError(400, 'Due date cannot be in the past');
+      if (data.dueDate < now) {
+        throw new AppError(400, 'Due date and time cannot be in the past');
       }
     }
 
@@ -92,11 +91,10 @@ export class TodoService {
 
     // Validate due date if provided
     if (data.dueDate) {
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
+      const now = new Date();
 
-      if (data.dueDate < today) {
-        throw new AppError(400, 'Due date cannot be in the past');
+      if (data.dueDate < now) {
+        throw new AppError(400, 'Due date and time cannot be in the past');
       }
     }
 

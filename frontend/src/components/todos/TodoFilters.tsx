@@ -5,7 +5,6 @@ import {
   setStatusFilter,
   setCategoryFilter,
   setSorting,
-  resetFilters,
 } from '@/store/slices/uiSlice';
 import { useGetCategoriesQuery } from '@/store/api/categoriesApi';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -49,16 +48,6 @@ export function TodoFilters() {
       })
     );
   };
-
-  const handleReset = () => {
-    dispatch(resetFilters());
-  };
-
-  const hasActiveFilters =
-    filters.status !== 'all' ||
-    filters.categoryId !== null ||
-    filters.sortBy !== 'createdAt' ||
-    filters.order !== 'desc';
 
   return (
     <Card>
@@ -137,18 +126,6 @@ export function TodoFilters() {
               </Button>
             </div>
           </div>
-
-          {/* Reset button */}
-          {hasActiveFilters && (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleReset}
-              className="w-full"
-            >
-              Reset Filters
-            </Button>
-          )}
         </div>
       </CardContent>
     </Card>
